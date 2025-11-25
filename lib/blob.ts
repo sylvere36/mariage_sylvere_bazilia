@@ -23,14 +23,30 @@ export async function getGuests(): Promise<Guest[]> {
     }
 
     // En production, utiliser Vercel Blob
-    const blobUrl = `${BLOB_STORE_PREFIX}/guests.json`;
-    const response = await fetch(`https://blob.vercel-storage.com/${blobUrl}`);
-    
-    if (!response.ok) {
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.warn('BLOB_READ_WRITE_TOKEN not configured, using empty array');
       return [];
     }
+
+    const blobUrl = `${BLOB_STORE_PREFIX}/guests.json`;
     
-    return await response.json();
+    try {
+      const response = await fetch(`https://blob.vercel-storage.com/${blobUrl}`, {
+        headers: {
+          'Authorization': `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
+        }
+      });
+      
+      if (!response.ok) {
+        console.warn('Blob not found, using empty array');
+        return [];
+      }
+      
+      return await response.json();
+    } catch (err) {
+      console.warn('Error fetching from blob, using empty array:', err);
+      return [];
+    }
   } catch (error) {
     console.error('Error getting guests:', error);
     return [];
@@ -51,6 +67,10 @@ export async function saveGuests(guests: Guest[]): Promise<void> {
     }
 
     // En production, utiliser Vercel Blob
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      throw new Error('BLOB_READ_WRITE_TOKEN not configured. Please add Vercel Blob Store.');
+    }
+
     await put(`${BLOB_STORE_PREFIX}/guests.json`, data, {
       access: 'public',
       contentType: 'application/json',
@@ -78,14 +98,30 @@ export async function getTables(): Promise<Table[]> {
       }
     }
 
-    const blobUrl = `${BLOB_STORE_PREFIX}/tables.json`;
-    const response = await fetch(`https://blob.vercel-storage.com/${blobUrl}`);
-    
-    if (!response.ok) {
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.warn('BLOB_READ_WRITE_TOKEN not configured, using empty array');
       return [];
     }
+
+    const blobUrl = `${BLOB_STORE_PREFIX}/tables.json`;
     
-    return await response.json();
+    try {
+      const response = await fetch(`https://blob.vercel-storage.com/${blobUrl}`, {
+        headers: {
+          'Authorization': `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
+        }
+      });
+      
+      if (!response.ok) {
+        console.warn('Blob not found, using empty array');
+        return [];
+      }
+      
+      return await response.json();
+    } catch (err) {
+      console.warn('Error fetching from blob, using empty array:', err);
+      return [];
+    }
   } catch (error) {
     console.error('Error getting tables:', error);
     return [];
@@ -103,6 +139,10 @@ export async function saveTables(tables: Table[]): Promise<void> {
       await fs.mkdir(path.dirname(filePath), { recursive: true });
       await fs.writeFile(filePath, data);
       return;
+    }
+
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      throw new Error('BLOB_READ_WRITE_TOKEN not configured. Please add Vercel Blob Store.');
     }
 
     await put(`${BLOB_STORE_PREFIX}/tables.json`, data, {
