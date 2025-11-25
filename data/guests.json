@@ -1,0 +1,62 @@
+[
+  {
+    "id": "g1",
+    "firstname": "Emmanuel",
+    "lastname": "Akambi",
+    "email": "emmanuel.akambi@example.com",
+    "phone": "+243 000 000 001",
+    "places": 2,
+    "children": 0,
+    "tableId": "t2",
+    "arrived": false,
+    "arrivalTime": null
+  },
+  {
+    "id": "g2",
+    "firstname": "Grace",
+    "lastname": "Mbudi",
+    "email": "grace.mbudi@example.com",
+    "phone": "+243 000 000 002",
+    "places": 2,
+    "children": 1,
+    "tableId": "t2",
+    "arrived": false,
+    "arrivalTime": null
+  },
+  {
+    "id": "g3",
+    "firstname": "Pasteur",
+    "lastname": "Daniel",
+    "email": "pasteur.daniel@elim.cd",
+    "phone": "+243 000 000 003",
+    "places": 2,
+    "children": 0,
+    "tableId": "t5",
+    "arrived": false,
+    "arrivalTime": null
+  },
+  {
+    "id": "g4",
+    "firstname": "Jean-Claude",
+    "lastname": "Tshimanga",
+    "email": "jc.tshimanga@example.com",
+    "phone": "+243 000 000 004",
+    "places": 1,
+    "children": 0,
+    "tableId": "t3",
+    "arrived": false,
+    "arrivalTime": null
+  },
+  {
+    "id": "g5",
+    "firstname": "Patience",
+    "lastname": "Mwamba",
+    "email": "patience.mwamba@example.com",
+    "phone": "+243 000 000 005",
+    "places": 2,
+    "children": 2,
+    "tableId": "t3",
+    "arrived": false,
+    "arrivalTime": null
+  }
+]

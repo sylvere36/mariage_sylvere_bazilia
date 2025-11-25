@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Application de Gestion d'Invités pour Mariage
 
-## Getting Started
+Application Next.js 14 pour gérer les invités de mariage en temps réel sur plusieurs appareils.
 
-First, run the development server:
+## 🚀 Fonctionnalités
 
-```bash
+- ✨ **Page d'accueil** : Recherche d'invités avec fuzzy search
+- 📱 **Optimisé mobile** : Interface responsive pour les hôtesses
+- ✅ **Validation d'arrivée** : Marquer les invités comme arrivés en temps réel
+- 🪑 **Gestion des tables** : CRUD complet avec capacité max 10 personnes
+- 👥 **Gestion des invités** : Ajouter, modifier, supprimer avec assignation aux tables
+- 📄 **Export PDF** : Génération de liste élégante des invités par table
+- 🔐 **Protection admin** : Authentification par mot de passe
+- ⚡ **Temps réel** : Synchronisation automatique entre appareils (polling 2s)
+
+## 🛠️ Technologies
+
+- **Next.js 14** avec App Router
+- **TypeScript** pour la sécurité des types
+- **Tailwind CSS** pour le style
+- **Vercel Blob** pour le stockage des données
+- **@react-pdf/renderer** pour l'export PDF
+- **Fuse.js** pour la recherche fuzzy
+
+## 📦 Installation
+
+\`\`\`bash
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+\`\`\`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrez [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔑 Authentification
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Mot de passe admin par défaut : \`admin123\`
 
-## Learn More
+## 🚀 Déploiement sur Vercel
 
-To learn more about Next.js, take a look at the following resources:
+1. Pushez le code sur GitHub
+2. Importez le projet sur Vercel
+3. Configurez la variable \`ADMIN_PASSWORD\`
+4. Déployez !
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📱 Utilisation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Pour les hôtesses
+1. Recherchez un invité
+2. Cliquez sur "Invité arrivé ✓"
 
-## Deploy on Vercel
+### Pour les administrateurs
+1. Accédez à \`/admin/login\`
+2. Gérez tables et invités
+3. Exportez en PDF
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 👨‍💻 Développé avec ❤️ par @sylvere36

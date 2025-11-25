@@ -1,0 +1,42 @@
+[
+  {
+    "id": "t1",
+    "name": "Amour",
+    "number": 1,
+    "description": "Sylvère, Bazilia et leurs témoins",
+    "capacity": 10,
+    "currentCount": 0
+  },
+  {
+    "id": "t2",
+    "name": "Table Famille",
+    "number": 2,
+    "description": "Famille proche des mariés",
+    "capacity": 10,
+    "currentCount": 0
+  },
+  {
+    "id": "t3",
+    "name": "Table Amis",
+    "number": 3,
+    "description": "Amis proches",
+    "capacity": 10,
+    "currentCount": 0
+  },
+  {
+    "id": "t4",
+    "name": "Table Collègues",
+    "number": 4,
+    "description": "Collègues et relations professionnelles",
+    "capacity": 10,
+    "currentCount": 0
+  },
+  {
+    "id": "t5",
+    "name": "Table Église",
+    "number": 5,
+    "description": "Membres de la communauté Elim",
+    "capacity": 10,
+    "currentCount": 0
+  }
+]

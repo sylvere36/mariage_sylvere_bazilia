@@ -1,0 +1,230 @@
+.card {
+  background: white;
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  max-width: 700px;
+  margin: 0 auto;
+  animation: fadeIn 0.4s ease-out;
+  border: 1px solid #f3f4f6;
+}
+
+.header {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  padding: 1.5rem;
+  border-radius: 1.25rem 1.25rem 0 0;
+}
+
+.guestName {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.75rem;
+  word-wrap: break-word;
+}
+
+.arrivedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #d1fae5;
+  color: #065f46;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: 1px solid #a7f3d0;
+}
+
+.content {
+  padding: 1.5rem;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #fef3c7;
+  border-radius: 0.75rem;
+}
+
+.infoIcon {
+  width: 28px;
+  height: 28px;
+  color: #d97706;
+  flex-shrink: 0;
+}
+
+.infoLabel {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.infoValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.tableInfo {
+  padding: 1.25rem;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-radius: 1rem;
+  border: 2px solid #fcd34d;
+  margin-bottom: 1.5rem;
+}
+
+.tableHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.tableIcon {
+  width: 32px;
+  height: 32px;
+  color: #d97706;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.tableDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.tableName {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #92400e;
+  margin-bottom: 0.5rem;
+  word-wrap: break-word;
+}
+
+.tableDescription {
+  font-size: 0.9375rem;
+  color: #78350f;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.arriveButton {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+.arriveButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.4);
+}
+
+.arriveButton:active {
+  transform: translateY(0);
+}
+
+.arriveButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.buttonIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.alreadyArrived {
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  border-radius: 1rem;
+  text-align: center;
+  border: 2px solid #6ee7b7;
+}
+
+.checkIcon {
+  width: 48px;
+  height: 48px;
+  color: #059669;
+  margin: 0 auto 1rem;
+}
+
+.alreadyArrivedTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #065f46;
+  margin-bottom: 0.5rem;
+}
+
+.alreadyArrivedTime {
+  font-size: 1rem;
+  color: #047857;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 640px) {
+  .card {
+    max-width: 750px;
+  }
+  
+  .header {
+    padding: 2rem;
+  }
+  
+  .guestName {
+    font-size: 2rem;
+  }
+  
+  .content {
+    padding: 2rem;
+  }
+  
+  .infoGrid {
+    gap: 1.25rem;
+  }
+  
+  .infoItem {
+    padding: 1.25rem;
+  }
+  
+  .tableInfo {
+    padding: 1.5rem;
+  }
+  
+  .arriveButton {
+    padding: 1.25rem 2rem;
+    font-size: 1.25rem;
+  }
+}
