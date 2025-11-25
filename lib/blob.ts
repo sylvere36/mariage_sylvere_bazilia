@@ -28,23 +28,31 @@ export async function getGuests(): Promise<Guest[]> {
       return [];
     }
 
-    const blobUrl = `${BLOB_STORE_PREFIX}/guests.json`;
-    
     try {
-      const response = await fetch(`https://blob.vercel-storage.com/${blobUrl}`, {
+      // Lister les blobs pour trouver le fichier
+      const { blobs } = await list({ prefix: `${BLOB_STORE_PREFIX}/guests` });
+      
+      if (blobs.length === 0) {
+        console.warn('Guests blob not found, using empty array');
+        return [];
+      }
+
+      // Récupérer le contenu avec cache désactivé
+      const response = await fetch(blobs[0].url, {
+        cache: 'no-store',
         headers: {
-          'Authorization': `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
+          'Cache-Control': 'no-cache, no-store, must-revalidate'
         }
       });
       
       if (!response.ok) {
-        console.warn('Blob not found, using empty array');
+        console.warn('Failed to fetch guests blob');
         return [];
       }
       
       return await response.json();
     } catch (err) {
-      console.warn('Error fetching from blob, using empty array:', err);
+      console.warn('Error fetching guests from blob:', err);
       return [];
     }
   } catch (error) {
@@ -74,6 +82,7 @@ export async function saveGuests(guests: Guest[]): Promise<void> {
     await put(`${BLOB_STORE_PREFIX}/guests.json`, data, {
       access: 'public',
       contentType: 'application/json',
+      addRandomSuffix: false,
     });
   } catch (error) {
     console.error('Error saving guests:', error);
@@ -103,23 +112,31 @@ export async function getTables(): Promise<Table[]> {
       return [];
     }
 
-    const blobUrl = `${BLOB_STORE_PREFIX}/tables.json`;
-    
     try {
-      const response = await fetch(`https://blob.vercel-storage.com/${blobUrl}`, {
+      // Lister les blobs pour trouver le fichier
+      const { blobs } = await list({ prefix: `${BLOB_STORE_PREFIX}/tables` });
+      
+      if (blobs.length === 0) {
+        console.warn('Tables blob not found, using empty array');
+        return [];
+      }
+
+      // Récupérer le contenu avec cache désactivé
+      const response = await fetch(blobs[0].url, {
+        cache: 'no-store',
         headers: {
-          'Authorization': `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
+          'Cache-Control': 'no-cache, no-store, must-revalidate'
         }
       });
       
       if (!response.ok) {
-        console.warn('Blob not found, using empty array');
+        console.warn('Failed to fetch tables blob');
         return [];
       }
       
       return await response.json();
     } catch (err) {
-      console.warn('Error fetching from blob, using empty array:', err);
+      console.warn('Error fetching tables from blob:', err);
       return [];
     }
   } catch (error) {
@@ -148,6 +165,7 @@ export async function saveTables(tables: Table[]): Promise<void> {
     await put(`${BLOB_STORE_PREFIX}/tables.json`, data, {
       access: 'public',
       contentType: 'application/json',
+      addRandomSuffix: false,
     });
   } catch (error) {
     console.error('Error saving tables:', error);
