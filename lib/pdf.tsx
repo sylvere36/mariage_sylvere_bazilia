@@ -193,7 +193,7 @@ function GuestListPDF({ tables, guests }: PDFDocumentProps) {
                   tableGuests.map((guest) => (
                     <View key={guest.id} style={styles.guestRow}>
                       <Text style={styles.guestName}>
-                        {guest.firstname} {guest.lastname}
+                        {guest.name}
                       </Text>
                       <Text style={styles.guestInfo}>
                         {guest.places} {guest.places > 1 ? 'places' : 'place'}
