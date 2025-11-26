@@ -80,10 +80,13 @@ export async function saveGuests(guests: Guest[]): Promise<void> {
       throw new Error('BLOB_READ_WRITE_TOKEN not configured. Please add Vercel Blob Store.');
     }
 
-    await put(`${BLOB_STORE_PREFIX}/guests.json`, data, {
+    const blob = await put(`${BLOB_STORE_PREFIX}/guests.json`, data, {
       access: 'public',
       contentType: 'application/json',
+      addRandomSuffix: false,
     });
+    
+    console.log('Saved guests to blob:', blob.url);
   } catch (error) {
     console.error('Error saving guests:', error);
     throw error;
@@ -136,10 +139,13 @@ export async function saveTables(tables: Table[]): Promise<void> {
       throw new Error('BLOB_READ_WRITE_TOKEN not configured. Please add Vercel Blob Store.');
     }
 
-    await put(`${BLOB_STORE_PREFIX}/tables.json`, data, {
+    const blob = await put(`${BLOB_STORE_PREFIX}/tables.json`, data, {
       access: 'public',
       contentType: 'application/json',
+      addRandomSuffix: false,
     });
+    
+    console.log('Saved tables to blob:', blob.url);
   } catch (error) {
     console.error('Error saving tables:', error);
     throw error;
