@@ -1,7 +1,34 @@
-import { put, head, list } from '@vercel/blob';
+import { put, list } from '@vercel/blob';
 import { Guest, Table } from './types';
 
 const BLOB_STORE_PREFIX = 'wedding-data';
+
+async function getBlobData<T>(filename: string): Promise<T[]> {
+  try {
+    // Lister tous les blobs et trouver celui qui correspond
+    const { blobs } = await list({ prefix: `${BLOB_STORE_PREFIX}/${filename}` });
+    
+    if (blobs.length === 0) {
+      console.log(`No blob found for ${filename}, returning empty array`);
+      return [];
+    }
+    
+    // Récupérer le premier blob (le plus récent)
+    const blob = blobs[0];
+    const response = await fetch(blob.url);
+    
+    if (!response.ok) {
+      console.error(`Failed to fetch blob ${filename}:`, response.status);
+      return [];
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(`Error getting blob ${filename}:`, error);
+    return [];
+  }
+}
 
 export async function getGuests(): Promise<Guest[]> {
   try {
@@ -28,25 +55,7 @@ export async function getGuests(): Promise<Guest[]> {
       return [];
     }
 
-    const blobUrl = `${BLOB_STORE_PREFIX}/guests.json`;
-    
-    try {
-      const response = await fetch(`https://blob.vercel-storage.com/${blobUrl}`, {
-        headers: {
-          'Authorization': `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
-        }
-      });
-      
-      if (!response.ok) {
-        console.warn('Blob not found, using empty array');
-        return [];
-      }
-      
-      return await response.json();
-    } catch (err) {
-      console.warn('Error fetching from blob, using empty array:', err);
-      return [];
-    }
+    return await getBlobData<Guest>('guests.json');
   } catch (error) {
     console.error('Error getting guests:', error);
     return [];
@@ -103,25 +112,7 @@ export async function getTables(): Promise<Table[]> {
       return [];
     }
 
-    const blobUrl = `${BLOB_STORE_PREFIX}/tables.json`;
-    
-    try {
-      const response = await fetch(`https://blob.vercel-storage.com/${blobUrl}`, {
-        headers: {
-          'Authorization': `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
-        }
-      });
-      
-      if (!response.ok) {
-        console.warn('Blob not found, using empty array');
-        return [];
-      }
-      
-      return await response.json();
-    } catch (err) {
-      console.warn('Error fetching from blob, using empty array:', err);
-      return [];
-    }
+    return await getBlobData<Table>('tables.json');
   } catch (error) {
     console.error('Error getting tables:', error);
     return [];
