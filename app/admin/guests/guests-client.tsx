@@ -79,8 +79,8 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
 
   const handleCancelArrival = async (guestId: string) => {
     try {
-      const updated = await cancelGuestArrival(guestId);
-      setGuests(guests.map(g => g.id === updated.id ? updated : g));
+      await cancelGuestArrival(guestId);
+      window.location.reload();
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Erreur');
     }
