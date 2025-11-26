@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { getGuests, saveGuests, getTables, saveTables, updateTableCounts } from '@/lib/blob';
+import { getGuests, saveGuest, deleteGuest as dbDeleteGuest, getTables, saveTable, deleteTable as dbDeleteTable, updateTableCounts } from '@/lib/db';
 import { Guest, Table } from '@/lib/types';
 
 async function revalidateAll() {
@@ -15,42 +15,39 @@ async function revalidateAll() {
 
 export async function markGuestArrived(guestId: string) {
   const guests = await getGuests();
-  const guestIndex = guests.findIndex(g => g.id === guestId);
+  const guest = guests.find(g => g.id === guestId);
   
-  if (guestIndex === -1) {
+  if (!guest) {
     throw new Error('Guest not found');
   }
 
-  guests[guestIndex] = {
-    ...guests[guestIndex],
+  await saveGuest({
+    ...guest,
     arrived: true,
     arrivalTime: new Date().toISOString(),
-  };
+  });
 
-  await saveGuests(guests);
   await revalidateAll();
 }
 
 export async function cancelGuestArrival(guestId: string) {
   const guests = await getGuests();
-  const guestIndex = guests.findIndex(g => g.id === guestId);
+  const guest = guests.find(g => g.id === guestId);
   
-  if (guestIndex === -1) {
+  if (!guest) {
     throw new Error('Guest not found');
   }
 
-  guests[guestIndex] = {
-    ...guests[guestIndex],
+  await saveGuest({
+    ...guest,
     arrived: false,
     arrivalTime: null,
-  };
+  });
 
-  await saveGuests(guests);
   await revalidateAll();
 }
 
 export async function createGuest(guest: Omit<Guest, 'id'>) {
-  const guests = await getGuests();
   const tables = await getTables();
   
   // Vérifier la capacité de la table
@@ -69,8 +66,7 @@ export async function createGuest(guest: Omit<Guest, 'id'>) {
     id: `g${Date.now()}`,
   };
 
-  guests.push(newGuest);
-  await saveGuests(guests);
+  await saveGuest(newGuest);
   await updateTableCounts();
   
   await revalidateAll();
@@ -78,14 +74,14 @@ export async function createGuest(guest: Omit<Guest, 'id'>) {
 
 export async function updateGuest(guestId: string, updates: Partial<Guest>) {
   const guests = await getGuests();
-  const guestIndex = guests.findIndex(g => g.id === guestId);
+  const guest = guests.find(g => g.id === guestId);
   
-  if (guestIndex === -1) {
+  if (!guest) {
     throw new Error('Guest not found');
   }
 
   // Si on change de table, vérifier la capacité
-  if (updates.tableId && updates.tableId !== guests[guestIndex].tableId) {
+  if (updates.tableId && updates.tableId !== guest.tableId) {
     const tables = await getTables();
     const newTable = tables.find(t => t.id === updates.tableId);
     
@@ -93,8 +89,8 @@ export async function updateGuest(guestId: string, updates: Partial<Guest>) {
       throw new Error('Table not found');
     }
     
-    const totalPlaces = (updates.places ?? guests[guestIndex].places) + 
-                       (updates.children ?? guests[guestIndex].children);
+    const totalPlaces = (updates.places ?? guest.places) + 
+                       (updates.children ?? guest.children);
     
     // Calculer la nouvelle occupation
     const currentTableGuests = guests.filter(g => g.id !== guestId && g.tableId === updates.tableId);
@@ -105,62 +101,51 @@ export async function updateGuest(guestId: string, updates: Partial<Guest>) {
     }
   }
 
-  guests[guestIndex] = {
-    ...guests[guestIndex],
+  await saveGuest({
+    ...guest,
     ...updates,
-  };
-
-  await saveGuests(guests);
+  });
   await updateTableCounts();
   
   await revalidateAll();
 }
 
 export async function deleteGuest(guestId: string) {
-  const guests = await getGuests();
-  const filteredGuests = guests.filter(g => g.id !== guestId);
-  
-  await saveGuests(filteredGuests);
+  await dbDeleteGuest(guestId);
   await updateTableCounts();
   
   await revalidateAll();
 }
 
 export async function createTable(table: Omit<Table, 'id' | 'currentCount'>) {
-  const tables = await getTables();
-  
   const newTable: Table = {
     ...table,
     id: `t${Date.now()}`,
     currentCount: 0,
   };
 
-  tables.push(newTable);
-  await saveTables(tables);
+  await saveTable(newTable);
   
   await revalidateAll();
 }
 
 export async function updateTable(tableId: string, updates: Partial<Table>) {
   const tables = await getTables();
-  const tableIndex = tables.findIndex(t => t.id === tableId);
+  const table = tables.find(t => t.id === tableId);
   
-  if (tableIndex === -1) {
+  if (!table) {
     throw new Error('Table not found');
   }
 
-  tables[tableIndex] = {
-    ...tables[tableIndex],
+  await saveTable({
+    ...table,
     ...updates,
-  };
-
-  await saveTables(tables);
+  });
   await revalidateAll();
 }
 
 export async function deleteTable(tableId: string) {
   const guests = await getGuests();
-  const tables = await getTables();
   
   // Vérifier qu'aucun invité n'est assigné à cette table
   const hasGuests = guests.some(g => g.tableId === tableId);
@@ -168,8 +153,7 @@ export async function deleteTable(tableId: string) {
     throw new Error('Cannot delete table with assigned guests');
   }
 
-  const filteredTables = tables.filter(t => t.id !== tableId);
-  await saveTables(filteredTables);
+  await dbDeleteTable(tableId);
   
   await revalidateAll();
 }

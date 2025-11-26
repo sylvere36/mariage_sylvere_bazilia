@@ -1,4 +1,4 @@
-import { getTables } from '@/lib/blob';
+import { getTables } from '@/lib/db';
 import TablesClientPage from './tables-client';
 
 //dd

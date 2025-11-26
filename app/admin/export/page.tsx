@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ArrowLeft, Download, FileText } from 'lucide-react';
-import { getGuests, getTables } from '@/lib/blob';
+import { getGuests, getTables } from '@/lib/db';
 import styles from '../admin.module.css';
 
 export default async function ExportPage() {

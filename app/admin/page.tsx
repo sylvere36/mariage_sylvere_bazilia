@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getGuests, getTables } from '@/lib/blob';
+import { getGuests, getTables } from '@/lib/db';
 import { Users, Table as TableIcon, CheckCircle, FileText, ArrowLeft } from 'lucide-react';
 import styles from './admin.module.css';
 

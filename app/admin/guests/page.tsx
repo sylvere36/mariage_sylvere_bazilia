@@ -1,4 +1,4 @@
-import { getGuests, getTables } from '@/lib/blob';
+import { getGuests, getTables } from '@/lib/db';
 import GuestsClientPage from './guests-client';
 
 export default async function GuestsPage() {

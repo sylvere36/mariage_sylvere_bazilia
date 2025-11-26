@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getGuests, getTables } from '@/lib/blob';
+import { getGuests, getTables } from '@/lib/db';
 
 export async function GET() {
   const [guests, tables] = await Promise.all([getGuests(), getTables()]);

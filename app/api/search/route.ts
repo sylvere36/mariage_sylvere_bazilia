@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getGuests, getTables } from '@/lib/blob';
+import { getGuests, getTables } from '@/lib/db';
 import { searchGuests, findExactGuest } from '@/lib/search';
 
 export async function GET(request: NextRequest) {

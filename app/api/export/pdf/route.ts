@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getGuests, getTables } from '@/lib/blob';
+import { getGuests, getTables } from '@/lib/db';
 import { generateGuestListPDF } from '@/lib/pdf';
 
 export async function GET() {
