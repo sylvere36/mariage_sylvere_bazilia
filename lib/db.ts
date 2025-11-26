@@ -5,15 +5,12 @@ import { Guest, Table } from './types';
 export async function getGuests(): Promise<Guest[]> {
   try {
     const guests = await prisma.guest.findMany({
-      orderBy: [{ lastname: 'asc' }, { firstname: 'asc' }],
+      orderBy: { name: 'asc' },
     });
     
     return guests.map(guest => ({
       id: guest.id,
-      firstname: guest.firstname,
-      lastname: guest.lastname,
-      email: guest.email || undefined,
-      phone: guest.phone || undefined,
+      name: guest.name,
       places: guest.places,
       children: guest.children,
       tableId: guest.tableId,
@@ -30,10 +27,7 @@ export async function saveGuest(guest: Guest): Promise<void> {
   await prisma.guest.upsert({
     where: { id: guest.id },
     update: {
-      firstname: guest.firstname,
-      lastname: guest.lastname,
-      email: guest.email || null,
-      phone: guest.phone || null,
+      name: guest.name,
       places: guest.places,
       children: guest.children,
       tableId: guest.tableId,
@@ -42,10 +36,7 @@ export async function saveGuest(guest: Guest): Promise<void> {
     },
     create: {
       id: guest.id,
-      firstname: guest.firstname,
-      lastname: guest.lastname,
-      email: guest.email || null,
-      phone: guest.phone || null,
+      name: guest.name,
       places: guest.places,
       children: guest.children,
       tableId: guest.tableId,

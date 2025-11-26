@@ -25,10 +25,7 @@ model Table {
 
 model Guest {
   id          String    @id
-  firstname   String
-  lastname    String
-  email       String?
-  phone       String?
+  name        String
   places      Int
   children    Int       @default(0)
   tableId     String    @map("table_id")

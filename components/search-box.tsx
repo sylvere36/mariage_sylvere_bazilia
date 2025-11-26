@@ -11,7 +11,7 @@ interface SearchBoxProps {
 interface Suggestion {
   id: string;
   text: string;
-  type: 'name' | 'email' | 'phone';
+  type: 'name';
 }
 
 export function SearchBox({ onSearch, onSuggestionSelect }: SearchBoxProps) {
@@ -50,7 +50,7 @@ export function SearchBox({ onSearch, onSuggestionSelect }: SearchBoxProps) {
           data.similar.slice(0, 5).forEach((guest: any) => {
             newSuggestions.push({
               id: guest.id,
-              text: `${guest.firstname} ${guest.lastname}`,
+              text: guest.name,
               type: 'name'
             });
           });
@@ -109,7 +109,7 @@ export function SearchBox({ onSearch, onSuggestionSelect }: SearchBoxProps) {
           <div className={styles.inputWrapper}>
             <input
               type="text"
-              placeholder="Rechercher par nom, prénom, email ou téléphone..."
+              placeholder="Rechercher par nom..."
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value);

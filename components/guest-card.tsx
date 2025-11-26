@@ -32,7 +32,7 @@ export function GuestCard({ guest, table }: GuestCardProps) {
     <div className={styles.card}>
       <div className={styles.header}>
         <h2 className={styles.guestName}>
-          {guest.firstname} {guest.lastname}
+          {guest.name}
         </h2>
         {guest.arrived && (
           <span className={styles.arrivedBadge}>

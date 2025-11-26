@@ -8,10 +8,7 @@ export function searchGuests(guests: Guest[], query: string): Guest[] {
 
   const fuse = new Fuse(guests, {
     keys: [
-      { name: 'firstname', weight: 2 },
-      { name: 'lastname', weight: 2 },
-      { name: 'email', weight: 1 },
-      { name: 'phone', weight: 1 },
+      { name: 'name', weight: 2 },
     ],
     threshold: 0.3,
     includeScore: true,
@@ -25,14 +22,8 @@ export function findExactGuest(guests: Guest[], query: string): Guest | null {
   const normalizedQuery = query.toLowerCase().trim();
   
   return guests.find(guest => {
-    const fullName = `${guest.firstname} ${guest.lastname}`.toLowerCase();
-    const reverseName = `${guest.lastname} ${guest.firstname}`.toLowerCase();
-    const email = guest.email?.toLowerCase() || '';
-    const phone = guest.phone || '';
+    const name = guest.name.toLowerCase();
     
-    return fullName === normalizedQuery || 
-           reverseName === normalizedQuery ||
-           email === normalizedQuery ||
-           phone === normalizedQuery;
+    return name === normalizedQuery || name.includes(normalizedQuery);
   }) || null;
 }

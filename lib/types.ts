@@ -9,10 +9,7 @@ export interface Table {
 
 export interface Guest {
   id: string;
-  firstname: string;
-  lastname: string;
-  email?: string;
-  phone?: string;
+  name: string;
   places: number;
   children: number;
   tableId: string;

@@ -32,10 +32,10 @@ export function GuestList({ guests, onSelectGuest }: GuestListProps) {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-lg sm:text-xl font-bold text-gray-900 mb-1">
-                  {guest.firstname} {guest.lastname}
+                  {guest.name}
                 </p>
                 <p className="text-sm sm:text-base text-gray-600">
-                  {guest.email || guest.phone || 'Aucun contact'}
+                  Table {table?.number} - {table?.name}
                 </p>
               </div>
             </div>
