@@ -35,7 +35,7 @@ export function GuestList({ guests, onSelectGuest }: GuestListProps) {
                   {guest.name}
                 </p>
                 <p className="text-sm sm:text-base text-gray-600">
-                  Table {table?.number} - {table?.name}
+                  {guest.places} {guest.places > 1 ? 'places' : 'place'} {guest.children > 0 ? `• ${guest.children} enfant${guest.children > 1 ? 's' : ''}` : ''}
                 </p>
               </div>
             </div>
