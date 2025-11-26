@@ -21,10 +21,7 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
   const [filter, setFilter] = useState<'all' | 'arrived' | 'not-arrived'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [formData, setFormData] = useState({
-    firstname: '',
-    lastname: '',
-    email: '',
-    phone: '',
+    name: '',
     places: 1,
     children: 0,
     tableId: '',
@@ -53,10 +50,7 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
   const handleEdit = (guest: Guest) => {
     setEditingGuest(guest);
     setFormData({
-      firstname: guest.firstname,
-      lastname: guest.lastname,
-      email: guest.email || '',
-      phone: guest.phone || '',
+      name: guest.name,
       places: guest.places,
       children: guest.children,
       tableId: guest.tableId,
@@ -90,10 +84,7 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
     setIsEditing(false);
     setEditingGuest(null);
     setFormData({
-      firstname: '',
-      lastname: '',
-      email: '',
-      phone: '',
+      name: '',
       places: 1,
       children: 0,
       tableId: '',
@@ -108,10 +99,7 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
     
     const matchesSearch = 
       !searchQuery ||
-      guest.firstname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      guest.lastname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      guest.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      guest.phone?.includes(searchQuery);
+      guest.name.toLowerCase().includes(searchQuery.toLowerCase());
     
     return matchesFilter && matchesSearch;
   });
@@ -182,44 +170,14 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
             
             <form onSubmit={handleSubmit} className={styles.form}>
               <div className={styles.formGroup}>
-                <label className={styles.label}>Prénom</label>
+                <label className={styles.label}>Nom complet</label>
                 <input
                   type="text"
                   required
-                  value={formData.firstname}
-                  onChange={(e) => setFormData({ ...formData, firstname: e.target.value })}
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className={styles.input}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Nom</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.lastname}
-                  onChange={(e) => setFormData({ ...formData, lastname: e.target.value })}
-                  className={styles.input}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Email</label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className={styles.input}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Téléphone</label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className={styles.input}
+                  placeholder="Ex: Jean Dupont"
                 />
               </div>
 
@@ -284,7 +242,6 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
                   <thead>
                     <tr>
                       <th>Nom</th>
-                      <th>Contact</th>
                       <th>Table</th>
                       <th style={{ textAlign: 'center' }}>Places</th>
                       <th style={{ textAlign: 'center' }}>Enfants</th>
@@ -293,18 +250,13 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredGuests.sort((a, b) => a.lastname.localeCompare(b.lastname)).map((guest) => {
+                    {filteredGuests.sort((a, b) => a.name.localeCompare(b.name)).map((guest) => {
                       const guestTable = tables.find(t => t.id === guest.tableId);
                       return (
                         <tr key={guest.id}>
                           <td>
                             <div style={{ fontWeight: '600' }}>
-                              {guest.firstname} {guest.lastname}
-                            </div>
-                          </td>
-                          <td>
-                            <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                              {guest.email || guest.phone || '-'}
+                              {guest.name}
                             </div>
                           </td>
                           <td>
