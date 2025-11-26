@@ -4,8 +4,13 @@ import { revalidatePath } from 'next/cache';
 import { getGuests, saveGuests, getTables, saveTables, updateTableCounts } from '@/lib/blob';
 import { Guest, Table } from '@/lib/types';
 
-function revalidateAll() {
-  revalidatePath('/', 'layout');
+async function revalidateAll() {
+  try {
+    revalidatePath('/', 'layout');
+  } catch (error) {
+    console.error('Revalidation error:', error);
+    // Ne pas bloquer l'opération si la revalidation échoue
+  }
 }
 
 export async function markGuestArrived(guestId: string) {
@@ -23,7 +28,7 @@ export async function markGuestArrived(guestId: string) {
   };
 
   await saveGuests(guests);
-  revalidateAll();
+  await revalidateAll();
   
   return guests[guestIndex];
 }
@@ -43,7 +48,7 @@ export async function cancelGuestArrival(guestId: string) {
   };
 
   await saveGuests(guests);
-  revalidateAll();
+  await revalidateAll();
   
   return guests[guestIndex];
 }
@@ -72,7 +77,7 @@ export async function createGuest(guest: Omit<Guest, 'id'>) {
   await saveGuests(guests);
   await updateTableCounts();
   
-  revalidateAll();
+  await revalidateAll();
   
   return newGuest;
 }
@@ -114,7 +119,7 @@ export async function updateGuest(guestId: string, updates: Partial<Guest>) {
   await saveGuests(guests);
   await updateTableCounts();
   
-  revalidateAll();
+  await revalidateAll();
   
   return guests[guestIndex];
 }
@@ -126,7 +131,7 @@ export async function deleteGuest(guestId: string) {
   await saveGuests(filteredGuests);
   await updateTableCounts();
   
-  revalidateAll();
+  await revalidateAll();
 }
 
 export async function createTable(table: Omit<Table, 'id' | 'currentCount'>) {
@@ -141,7 +146,7 @@ export async function createTable(table: Omit<Table, 'id' | 'currentCount'>) {
   tables.push(newTable);
   await saveTables(tables);
   
-  revalidateAll();
+  await revalidateAll();
   
   return newTable;
 }
@@ -160,7 +165,7 @@ export async function updateTable(tableId: string, updates: Partial<Table>) {
   };
 
   await saveTables(tables);
-  revalidateAll();
+  await revalidateAll();
   
   return tables[tableIndex];
 }
@@ -178,5 +183,5 @@ export async function deleteTable(tableId: string) {
   const filteredTables = tables.filter(t => t.id !== tableId);
   await saveTables(filteredTables);
   
-  revalidateAll();
+  await revalidateAll();
 }

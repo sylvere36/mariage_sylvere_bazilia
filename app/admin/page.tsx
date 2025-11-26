@@ -3,8 +3,6 @@ import { getGuests, getTables } from '@/lib/blob';
 import { Users, Table as TableIcon, CheckCircle, FileText, ArrowLeft } from 'lucide-react';
 import styles from './admin.module.css';
 
-export const dynamic = 'force-dynamic';
-
 export default async function AdminPage() {
   const [guests, tables] = await Promise.all([getGuests(), getTables()]);
 

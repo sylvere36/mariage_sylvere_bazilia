@@ -28,31 +28,23 @@ export async function getGuests(): Promise<Guest[]> {
       return [];
     }
 
+    const blobUrl = `${BLOB_STORE_PREFIX}/guests.json`;
+    
     try {
-      // Lister les blobs pour trouver le fichier
-      const { blobs } = await list({ prefix: `${BLOB_STORE_PREFIX}/guests` });
-      
-      if (blobs.length === 0) {
-        console.warn('Guests blob not found, using empty array');
-        return [];
-      }
-
-      // Récupérer le contenu avec cache désactivé
-      const response = await fetch(blobs[0].url, {
-        cache: 'no-store',
+      const response = await fetch(`https://blob.vercel-storage.com/${blobUrl}`, {
         headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate'
+          'Authorization': `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
         }
       });
       
       if (!response.ok) {
-        console.warn('Failed to fetch guests blob');
+        console.warn('Blob not found, using empty array');
         return [];
       }
       
       return await response.json();
     } catch (err) {
-      console.warn('Error fetching guests from blob:', err);
+      console.warn('Error fetching from blob, using empty array:', err);
       return [];
     }
   } catch (error) {
@@ -82,7 +74,6 @@ export async function saveGuests(guests: Guest[]): Promise<void> {
     await put(`${BLOB_STORE_PREFIX}/guests.json`, data, {
       access: 'public',
       contentType: 'application/json',
-      addRandomSuffix: false,
     });
   } catch (error) {
     console.error('Error saving guests:', error);
@@ -112,31 +103,23 @@ export async function getTables(): Promise<Table[]> {
       return [];
     }
 
+    const blobUrl = `${BLOB_STORE_PREFIX}/tables.json`;
+    
     try {
-      // Lister les blobs pour trouver le fichier
-      const { blobs } = await list({ prefix: `${BLOB_STORE_PREFIX}/tables` });
-      
-      if (blobs.length === 0) {
-        console.warn('Tables blob not found, using empty array');
-        return [];
-      }
-
-      // Récupérer le contenu avec cache désactivé
-      const response = await fetch(blobs[0].url, {
-        cache: 'no-store',
+      const response = await fetch(`https://blob.vercel-storage.com/${blobUrl}`, {
         headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate'
+          'Authorization': `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
         }
       });
       
       if (!response.ok) {
-        console.warn('Failed to fetch tables blob');
+        console.warn('Blob not found, using empty array');
         return [];
       }
       
       return await response.json();
     } catch (err) {
-      console.warn('Error fetching tables from blob:', err);
+      console.warn('Error fetching from blob, using empty array:', err);
       return [];
     }
   } catch (error) {
@@ -165,7 +148,6 @@ export async function saveTables(tables: Table[]): Promise<void> {
     await put(`${BLOB_STORE_PREFIX}/tables.json`, data, {
       access: 'public',
       contentType: 'application/json',
-      addRandomSuffix: false,
     });
   } catch (error) {
     console.error('Error saving tables:', error);
@@ -175,18 +157,23 @@ export async function saveTables(tables: Table[]): Promise<void> {
 
 // Helpers pour mettre à jour le count des tables
 export async function updateTableCounts(): Promise<void> {
-  const [guests, tables] = await Promise.all([getGuests(), getTables()]);
-  
-  const tableCounts = guests.reduce((acc, guest) => {
-    const totalPlaces = guest.places + guest.children;
-    acc[guest.tableId] = (acc[guest.tableId] || 0) + totalPlaces;
-    return acc;
-  }, {} as Record<string, number>);
+  try {
+    const [guests, tables] = await Promise.all([getGuests(), getTables()]);
+    
+    const tableCounts = guests.reduce((acc, guest) => {
+      const totalPlaces = guest.places + guest.children;
+      acc[guest.tableId] = (acc[guest.tableId] || 0) + totalPlaces;
+      return acc;
+    }, {} as Record<string, number>);
 
-  const updatedTables = tables.map(table => ({
-    ...table,
-    currentCount: tableCounts[table.id] || 0
-  }));
+    const updatedTables = tables.map(table => ({
+      ...table,
+      currentCount: tableCounts[table.id] || 0
+    }));
 
-  await saveTables(updatedTables);
+    await saveTables(updatedTables);
+  } catch (error) {
+    console.error('Error updating table counts:', error);
+    // Ne pas propager l'erreur pour ne pas bloquer l'opération principale
+  }
 }
