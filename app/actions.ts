@@ -29,8 +29,6 @@ export async function markGuestArrived(guestId: string) {
 
   await saveGuests(guests);
   await revalidateAll();
-  
-  return guests[guestIndex];
 }
 
 export async function cancelGuestArrival(guestId: string) {
@@ -49,8 +47,6 @@ export async function cancelGuestArrival(guestId: string) {
 
   await saveGuests(guests);
   await revalidateAll();
-  
-  return guests[guestIndex];
 }
 
 export async function createGuest(guest: Omit<Guest, 'id'>) {
@@ -78,8 +74,6 @@ export async function createGuest(guest: Omit<Guest, 'id'>) {
   await updateTableCounts();
   
   await revalidateAll();
-  
-  return newGuest;
 }
 
 export async function updateGuest(guestId: string, updates: Partial<Guest>) {
@@ -120,8 +114,6 @@ export async function updateGuest(guestId: string, updates: Partial<Guest>) {
   await updateTableCounts();
   
   await revalidateAll();
-  
-  return guests[guestIndex];
 }
 
 export async function deleteGuest(guestId: string) {
@@ -147,8 +139,6 @@ export async function createTable(table: Omit<Table, 'id' | 'currentCount'>) {
   await saveTables(tables);
   
   await revalidateAll();
-  
-  return newTable;
 }
 
 export async function updateTable(tableId: string, updates: Partial<Table>) {
@@ -166,8 +156,6 @@ export async function updateTable(tableId: string, updates: Partial<Table>) {
 
   await saveTables(tables);
   await revalidateAll();
-  
-  return tables[tableIndex];
 }
 
 export async function deleteTable(tableId: string) {
