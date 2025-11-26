@@ -27,14 +27,14 @@ export default function TablesClientPage({ initialTables }: TablesClientPageProp
 
     try {
       if (editingTable) {
-        const updated = await updateTable(editingTable.id, formData);
-        setTables(tables.map(t => t.id === updated.id ? updated : t));
+        await updateTable(editingTable.id, formData);
+        // Recharger la page pour voir les changements
+        window.location.reload();
       } else {
-        const newTable = await createTable(formData);
-        setTables([...tables, newTable]);
+        await createTable(formData);
+        // Recharger la page pour voir les changements
+        window.location.reload();
       }
-
-      resetForm();
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Erreur');
     }
@@ -58,7 +58,7 @@ export default function TablesClientPage({ initialTables }: TablesClientPageProp
 
     try {
       await deleteTable(tableId);
-      setTables(tables.filter(t => t.id !== tableId));
+      window.location.reload();
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Erreur');
     }

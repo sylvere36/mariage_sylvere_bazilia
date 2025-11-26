@@ -35,18 +35,15 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
 
     try {
       if (editingGuest) {
-        const updated = await updateGuest(editingGuest.id, formData);
-        setGuests(guests.map(g => g.id === updated.id ? updated : g));
+        await updateGuest(editingGuest.id, formData);
       } else {
-        const newGuest = await createGuest({
+        await createGuest({
           ...formData,
           arrived: false,
           arrivalTime: null,
         });
-        setGuests([...guests, newGuest]);
       }
 
-      resetForm();
       window.location.reload();
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Erreur');
@@ -74,7 +71,6 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
 
     try {
       await deleteGuest(guestId);
-      setGuests(guests.filter(g => g.id !== guestId));
       window.location.reload();
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Erreur');
