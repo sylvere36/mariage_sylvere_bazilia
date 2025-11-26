@@ -1,9 +1,17 @@
-// Ce script n'est plus nécessaire avec Prisma
-// Utilisez: npx prisma migrate dev
-// ou: npx prisma db push
+import { execSync } from 'child_process';
 
-console.log('Pour initialiser la base de données avec Prisma:');
-console.log('1. Assurez-vous que POSTGRES_PRISMA_URL est configuré');
-console.log('2. Lancez: npx prisma db push');
-console.log('3. Ou pour les migrations: npx prisma migrate dev');
+async function main() {
+  console.log('🚀 Initializing database...');
+  
+  try {
+    // Push le schema vers la base de données
+    execSync('npx prisma db push --accept-data-loss', { stdio: 'inherit' });
+    console.log('✅ Database initialized successfully!');
+  } catch (error) {
+    console.error('❌ Error initializing database:', error);
+    process.exit(1);
+  }
+}
+
+main();
 
