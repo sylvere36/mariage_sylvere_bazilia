@@ -233,8 +233,8 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
                   type="number"
                   required
                   min="1"
-                  value={formData.places}
-                  onChange={(e) => setFormData({ ...formData, places: parseInt(e.target.value) })}
+                  value={formData.places || ''}
+                  onChange={(e) => setFormData({ ...formData, places: parseInt(e.target.value) || 1 })}
                   className={styles.input}
                 />
               </div>
@@ -244,8 +244,8 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
                 <input
                   type="number"
                   min="0"
-                  value={formData.children}
-                  onChange={(e) => setFormData({ ...formData, children: parseInt(e.target.value) })}
+                  value={formData.children || ''}
+                  onChange={(e) => setFormData({ ...formData, children: parseInt(e.target.value) || 0 })}
                   className={styles.input}
                 />
               </div>

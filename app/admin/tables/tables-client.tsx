@@ -108,8 +108,8 @@ export default function TablesClientPage({ initialTables }: TablesClientPageProp
                   <input
                     type="number"
                     required
-                    value={formData.number}
-                    onChange={(e) => setFormData({ ...formData, number: parseInt(e.target.value) })}
+                    value={formData.number || ''}
+                    onChange={(e) => setFormData({ ...formData, number: parseInt(e.target.value) || 0 })}
                     className={styles.input}
                   />
                 </div>
@@ -142,8 +142,8 @@ export default function TablesClientPage({ initialTables }: TablesClientPageProp
                     required
                     min="1"
                     max="10"
-                    value={formData.capacity}
-                    onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
+                    value={formData.capacity || ''}
+                    onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) || 10 })}
                     className={styles.input}
                   />
                 </div>
