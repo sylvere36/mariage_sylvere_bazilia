@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Table {
+  id           String   @id
+  name         String
+  number       Int
+  description  String?
+  capacity     Int
+  currentCount Int      @default(0) @map("current_count")
+  guests       Guest[]
+
+  @@map("tables")
+}
+
+model Guest {
+  id          String    @id
+  firstname   String
+  lastname    String
+  email       String?
+  phone       String?
+  places      Int
+  children    Int       @default(0)
+  tableId     String    @map("table_id")
+  table       Table     @relation(fields: [tableId], references: [id])
+  arrived     Boolean   @default(false)
+  arrivalTime DateTime? @map("arrival_time")
+
+  @@map("guests")
+}
+
