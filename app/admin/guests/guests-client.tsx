@@ -284,7 +284,7 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
                           <td>
                             {guestTable && (
                               <span className={`${styles.badge} ${styles.info}`}>
-                                Table {guestTable.number}
+                                {guestTable.name}
                               </span>
                             )}
                           </td>
