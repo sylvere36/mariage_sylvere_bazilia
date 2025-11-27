@@ -18,14 +18,26 @@ export function searchGuests(guests: Guest[], query: string): Guest[] {
 
   const normalizedQuery = normalizeString(query);
 
+  // Recherche par sous-chaîne d'abord (plus rapide et plus intuitif)
+  const substringMatches = guests.filter(guest => {
+    const name = normalizeString(guest.name);
+    return name.includes(normalizedQuery);
+  });
+
+  // Si on trouve des résultats exacts, les retourner
+  if (substringMatches.length > 0) {
+    return substringMatches;
+  }
+
+  // Sinon, utiliser fuzzy search pour les fautes de frappe
   const fuse = new Fuse(guests, {
     keys: [
       { name: 'name', weight: 2 },
     ],
-    threshold: 0.5, // Encore plus tolérant
-    ignoreLocation: true, // Chercher dans toute la chaîne
-    distance: 100, // Augmenter la distance de recherche
-    minMatchCharLength: 2, // Minimum 2 caractères pour matcher
+    threshold: 0.5,
+    ignoreLocation: true,
+    distance: 100,
+    minMatchCharLength: 2,
     includeScore: true,
     useExtendedSearch: false,
     getFn: (obj, path) => {
@@ -41,7 +53,7 @@ export function searchGuests(guests: Guest[], query: string): Guest[] {
 export function findExactGuest(guests: Guest[], query: string): Guest | null {
   const normalizedQuery = normalizeString(query);
   
-  // D'abord chercher une correspondance exacte complète
+  // Chercher une correspondance exacte complète
   const exactMatch = guests.find(guest => {
     const name = normalizeString(guest.name);
     return name === normalizedQuery;
@@ -49,15 +61,12 @@ export function findExactGuest(guests: Guest[], query: string): Guest | null {
   
   if (exactMatch) return exactMatch;
   
-  // Ensuite chercher si la requête est contenue dans le nom (minimum 4 caractères)
-  if (normalizedQuery.length >= 4) {
-    const partialMatch = guests.find(guest => {
-      const name = normalizeString(guest.name);
-      return name.includes(normalizedQuery);
-    });
-    
-    if (partialMatch) return partialMatch;
-  }
+  // Si un seul invité contient la requête, le considérer comme match exact
+  const matches = guests.filter(guest => {
+    const name = normalizeString(guest.name);
+    return name.includes(normalizedQuery);
+  });
   
-  return null;
+  // Retourner le match seulement s'il est unique
+  return matches.length === 1 ? matches[0] : null;
 }
