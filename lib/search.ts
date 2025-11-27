@@ -53,20 +53,11 @@ export function searchGuests(guests: Guest[], query: string): Guest[] {
 export function findExactGuest(guests: Guest[], query: string): Guest | null {
   const normalizedQuery = normalizeString(query);
   
-  // Chercher une correspondance exacte complète
+  // Chercher UNIQUEMENT une correspondance exacte complète (nom entier)
   const exactMatch = guests.find(guest => {
     const name = normalizeString(guest.name);
     return name === normalizedQuery;
   });
   
-  if (exactMatch) return exactMatch;
-  
-  // Si un seul invité contient la requête, le considérer comme match exact
-  const matches = guests.filter(guest => {
-    const name = normalizeString(guest.name);
-    return name.includes(normalizedQuery);
-  });
-  
-  // Retourner le match seulement s'il est unique
-  return matches.length === 1 ? matches[0] : null;
+  return exactMatch || null;
 }
