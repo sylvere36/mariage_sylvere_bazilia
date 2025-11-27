@@ -50,7 +50,7 @@ export function SearchBox({ onSearch, onSuggestionSelect }: SearchBoxProps) {
         const newSuggestions: Suggestion[] = [];
         
         if (data.similar && data.similar.length > 0) {
-          data.similar.slice(0, 5).forEach((guest: any) => {
+          data.similar.forEach((guest: any) => {
             newSuggestions.push({
               id: guest.id,
               text: guest.name,
