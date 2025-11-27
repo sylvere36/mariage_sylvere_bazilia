@@ -109,7 +109,8 @@ export async function updateTableCounts(): Promise<void> {
         where: { tableId: table.id },
       });
       
-      const count = guests.reduce((sum, guest) => sum + guest.places + guest.children, 0);
+      // Les enfants ne comptent pas (salle à part)
+      const count = guests.reduce((sum: number, guest: any) => sum + guest.places, 0);
       
       await prisma.table.update({
         where: { id: table.id },

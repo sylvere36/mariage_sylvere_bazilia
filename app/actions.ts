@@ -56,8 +56,8 @@ export async function createGuest(guest: Omit<Guest, 'id'>) {
     throw new Error('Table not found');
   }
   
-  const totalPlaces = guest.places + guest.children;
-  if (table.currentCount + totalPlaces > table.capacity) {
+  // Les enfants ne comptent pas dans la capacité (salle à part)
+  if (table.currentCount + guest.places > table.capacity) {
     throw new Error('Table capacity exceeded');
   }
 
@@ -89,14 +89,14 @@ export async function updateGuest(guestId: string, updates: Partial<Guest>) {
       throw new Error('Table not found');
     }
     
-    const totalPlaces = (updates.places ?? guest.places) + 
-                       (updates.children ?? guest.children);
+    // Les enfants ne comptent pas dans la capacité (salle à part)
+    const adultPlaces = updates.places ?? guest.places;
     
-    // Calculer la nouvelle occupation
+    // Calculer la nouvelle occupation (sans les enfants)
     const currentTableGuests = guests.filter(g => g.id !== guestId && g.tableId === updates.tableId);
-    const currentOccupation = currentTableGuests.reduce((sum, g) => sum + g.places + g.children, 0);
+    const currentOccupation = currentTableGuests.reduce((sum, g) => sum + g.places, 0);
     
-    if (currentOccupation + totalPlaces > newTable.capacity) {
+    if (currentOccupation + adultPlaces > newTable.capacity) {
       throw new Error('Table capacity exceeded');
     }
   }
