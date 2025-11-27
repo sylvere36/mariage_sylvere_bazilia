@@ -280,13 +280,15 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
                   {sortedTableIds.map(tableId => {
                     const table = tables.find(t => t.id === tableId);
                     const tableGuests = guestsByTable[tableId].sort((a, b) => a.name.localeCompare(b.name));
+                    const totalPlaces = tableGuests.reduce((sum, g) => sum + g.places, 0);
+                    const totalChildren = tableGuests.reduce((sum, g) => sum + g.children, 0);
                     
                     return (
                       <div key={tableId}>
                         <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.75rem', color: '#111827' }}>
                           {table?.name} - Table {table?.number}
                           <span style={{ fontSize: '0.875rem', fontWeight: '400', color: '#6b7280', marginLeft: '0.5rem' }}>
-                            ({tableGuests.length} {tableGuests.length > 1 ? 'invités' : 'invité'})
+                            ({totalPlaces} {totalPlaces > 1 ? 'places' : 'place'}{totalChildren > 0 ? ` • ${totalChildren} ${totalChildren > 1 ? 'enfants' : 'enfant'}` : ''})
                           </span>
                         </h3>
                         <div className={styles.card} style={{ overflowX: 'auto' }}>
