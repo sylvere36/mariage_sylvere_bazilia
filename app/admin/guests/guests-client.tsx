@@ -20,6 +20,7 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
   const [editingGuest, setEditingGuest] = useState<Guest | null>(null);
   const [filter, setFilter] = useState<'all' | 'arrived' | 'not-arrived'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTableId, setSelectedTableId] = useState<string>('all');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -106,7 +107,10 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
       !searchQuery ||
       guest.name.toLowerCase().includes(searchQuery.toLowerCase());
     
-    return matchesFilter && matchesSearch;
+    const matchesTable = 
+      selectedTableId === 'all' || guest.tableId === selectedTableId;
+    
+    return matchesFilter && matchesSearch && matchesTable;
   });
 
   return (
@@ -138,6 +142,19 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
               className={styles.input}
               style={{ flex: 1, minWidth: '250px' }}
             />
+            <select
+              value={selectedTableId}
+              onChange={(e) => setSelectedTableId(e.target.value)}
+              className={styles.select}
+              style={{ minWidth: '180px' }}
+            >
+              <option value="all">Toutes les tables</option>
+              {tables.sort((a, b) => a.number - b.number).map((table) => (
+                <option key={table.id} value={table.id}>
+                  Table {table.number} - {table.name}
+                </option>
+              ))}
+            </select>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               <button
                 className={filter === 'all' ? styles.button : `${styles.button} ${styles.buttonSecondary}`}
