@@ -125,6 +125,9 @@ export default function OverviewClientPage({ initialTables, initialGuests }: Ove
                       </span>
                       <h3 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>{table.name}</h3>
                     </div>
+                    {table.description && (
+                      <p style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '0.75rem' }}>{table.description}</p>
+                    )}
 
                     <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', fontSize: '0.875rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
