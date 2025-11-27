@@ -19,6 +19,7 @@ export function SearchBox({ onSearch, onSuggestionSelect }: SearchBoxProps) {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [isLoading, setIsLoading] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -37,9 +38,11 @@ export function SearchBox({ onSearch, onSuggestionSelect }: SearchBoxProps) {
       if (query.length < 2) {
         setSuggestions([]);
         setShowSuggestions(false);
+        setIsLoading(false);
         return;
       }
 
+      setIsLoading(true);
       try {
         const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
         const data = await response.json();
@@ -57,9 +60,11 @@ export function SearchBox({ onSearch, onSuggestionSelect }: SearchBoxProps) {
         }
 
         setSuggestions(newSuggestions);
-        setShowSuggestions(newSuggestions.length > 0);
+        setShowSuggestions(true);
+        setIsLoading(false);
       } catch (error) {
         console.error('Error fetching suggestions:', error);
+        setIsLoading(false);
       }
     };
 
@@ -134,20 +139,30 @@ export function SearchBox({ onSearch, onSuggestionSelect }: SearchBoxProps) {
         </div>
       </form>
 
-      {showSuggestions && suggestions.length > 0 && (
+      {showSuggestions && (
         <div className={styles.suggestions}>
-          {suggestions.map((suggestion, index) => (
-            <button
-              key={suggestion.id}
-              type="button"
-              className={`${styles.suggestionItem} ${index === selectedIndex ? styles.suggestionActive : ''}`}
-              onClick={() => handleSuggestionClick(suggestion)}
-              onMouseEnter={() => setSelectedIndex(index)}
-            >
-              <span className={styles.suggestionIcon}>👤</span>
-              <span className={styles.suggestionText}>{suggestion.text}</span>
-            </button>
-          ))}
+          {isLoading ? (
+            <div className={styles.suggestionItem} style={{ justifyContent: 'center' }}>
+              <span>Recherche en cours...</span>
+            </div>
+          ) : suggestions.length > 0 ? (
+            suggestions.map((suggestion, index) => (
+              <button
+                key={suggestion.id}
+                type="button"
+                className={`${styles.suggestionItem} ${index === selectedIndex ? styles.suggestionActive : ''}`}
+                onClick={() => handleSuggestionClick(suggestion)}
+                onMouseEnter={() => setSelectedIndex(index)}
+              >
+                <span className={styles.suggestionIcon}>👤</span>
+                <span className={styles.suggestionText}>{suggestion.text}</span>
+              </button>
+            ))
+          ) : (
+            <div className={styles.suggestionItem} style={{ justifyContent: 'center' }}>
+              <span>Aucun invité trouvé</span>
+            </div>
+          )}
         </div>
       )}
     </div>
