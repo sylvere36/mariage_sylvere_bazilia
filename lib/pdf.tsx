@@ -166,7 +166,14 @@ function GuestListPDF({ tables, guests }: PDFDocumentProps) {
           </View>
         </View>
 
-        {tables.sort((a, b) => a.number - b.number).map((table) => {
+        {tables
+          .sort((a, b) => a.number - b.number)
+          .filter((table) => {
+            // Filtrer les tables sans invités
+            const tableGuests = guests.filter(g => g.tableId === table.id);
+            return tableGuests.length > 0;
+          })
+          .map((table) => {
           const tableGuests = guests.filter(g => g.tableId === table.id);
           
           return (
@@ -185,12 +192,7 @@ function GuestListPDF({ tables, guests }: PDFDocumentProps) {
               </View>
 
               <View style={styles.guestList}>
-                {tableGuests.length === 0 ? (
-                  <Text style={{ fontSize: 10, color: '#9ca3af', fontStyle: 'italic' }}>
-                    Aucun invité assigné
-                  </Text>
-                ) : (
-                  tableGuests.map((guest) => (
+                {tableGuests.map((guest) => (
                     <View key={guest.id} style={styles.guestRow}>
                       <Text style={styles.guestName}>
                         {guest.name}
@@ -207,8 +209,7 @@ function GuestListPDF({ tables, guests }: PDFDocumentProps) {
                         <Text style={styles.arrivedBadge}>Arrivé</Text>
                       )}
                     </View>
-                  ))
-                )}
+                  ))}
               </View>
             </View>
           );
