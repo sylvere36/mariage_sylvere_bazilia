@@ -113,6 +113,23 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
     return matchesFilter && matchesSearch && matchesTable;
   });
 
+  // Grouper les invités par table
+  const guestsByTable = filteredGuests.reduce((acc, guest) => {
+    const tableId = guest.tableId;
+    if (!acc[tableId]) {
+      acc[tableId] = [];
+    }
+    acc[tableId].push(guest);
+    return acc;
+  }, {} as Record<string, Guest[]>);
+
+  // Trier les tables par numéro
+  const sortedTableIds = Object.keys(guestsByTable).sort((a, b) => {
+    const tableA = tables.find(t => t.id === a);
+    const tableB = tables.find(t => t.id === b);
+    return (tableA?.number || 0) - (tableB?.number || 0);
+  });
+
   return (
     <main className={styles.container}>
       <div className={styles.content}>
@@ -259,92 +276,98 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
             {/* List */}
             <div>
               {filteredGuests.length > 0 ? (
-              <div className={styles.card} style={{ overflowX: 'auto' }}>
-                <table className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th>Nom</th>
-                      <th>Table</th>
-                      <th style={{ textAlign: 'center' }}>Places</th>
-                      <th style={{ textAlign: 'center' }}>Enfants</th>
-                      <th>Statut</th>
-                      <th style={{ textAlign: 'center' }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredGuests.sort((a, b) => a.name.localeCompare(b.name)).map((guest) => {
-                      const guestTable = tables.find(t => t.id === guest.tableId);
-                      return (
-                        <tr key={guest.id}>
-                          <td>
-                            <div style={{ fontWeight: '600' }}>
-                              {guest.name}
-                            </div>
-                          </td>
-                          <td>
-                            {guestTable && (
-                              <span className={`${styles.badge} ${styles.info}`}>
-                                {guestTable.name}
-                              </span>
-                            )}
-                          </td>
-                          <td style={{ textAlign: 'center' }}>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
-                              <Users style={{ width: '14px', height: '14px' }} />
-                              {guest.places}
-                            </div>
-                          </td>
-                          <td style={{ textAlign: 'center' }}>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
-                              <Baby style={{ width: '14px', height: '14px' }} />
-                              {guest.children}
-                            </div>
-                          </td>
-                          <td>
-                            {guest.arrived ? (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <span className={`${styles.badge} ${styles.success}`}>
-                                  <CheckCircle style={{ width: '12px', height: '12px' }} />
-                                  Arrivé {guest.arrivalTime && formatTime(guest.arrivalTime)}
-                                </span>
-                                <button
-                                  className={`${styles.iconButton} ${styles.danger}`}
-                                  onClick={() => handleCancelArrival(guest.id)}
-                                  title="Annuler l'arrivée"
-                                >
-                                  <X style={{ width: '14px', height: '14px' }} />
-                                </button>
-                              </div>
-                            ) : (
-                              <span className={`${styles.badge} ${styles.warning}`}>
-                                En attente
-                              </span>
-                            )}
-                          </td>
-                          <td>
-                            <div className={styles.actions} style={{ justifyContent: 'center' }}>
-                              <button
-                                className={styles.iconButton}
-                                onClick={() => handleEdit(guest)}
-                                title="Modifier"
-                              >
-                                <Edit style={{ width: '16px', height: '16px' }} />
-                              </button>
-                              <button
-                                className={`${styles.iconButton} ${styles.danger}`}
-                                onClick={() => handleDelete(guest.id)}
-                                title="Supprimer"
-                              >
-                                <Trash2 style={{ width: '16px', height: '16px' }} />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  {sortedTableIds.map(tableId => {
+                    const table = tables.find(t => t.id === tableId);
+                    const tableGuests = guestsByTable[tableId].sort((a, b) => a.name.localeCompare(b.name));
+                    
+                    return (
+                      <div key={tableId}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.75rem', color: '#111827' }}>
+                          {table?.name} - Table {table?.number}
+                          <span style={{ fontSize: '0.875rem', fontWeight: '400', color: '#6b7280', marginLeft: '0.5rem' }}>
+                            ({tableGuests.length} {tableGuests.length > 1 ? 'invités' : 'invité'})
+                          </span>
+                        </h3>
+                        <div className={styles.card} style={{ overflowX: 'auto' }}>
+                          <table className={styles.table}>
+                            <thead>
+                              <tr>
+                                <th>Nom</th>
+                                <th style={{ textAlign: 'center' }}>Places</th>
+                                <th style={{ textAlign: 'center' }}>Enfants</th>
+                                <th>Statut</th>
+                                <th style={{ textAlign: 'center' }}>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {tableGuests.map((guest) => (
+                                <tr key={guest.id}>
+                                  <td>
+                                    <div style={{ fontWeight: '600' }}>
+                                      {guest.name}
+                                    </div>
+                                  </td>
+                                  <td style={{ textAlign: 'center' }}>
+                                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                                      <Users style={{ width: '14px', height: '14px' }} />
+                                      {guest.places}
+                                    </div>
+                                  </td>
+                                  <td style={{ textAlign: 'center' }}>
+                                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                                      <Baby style={{ width: '14px', height: '14px' }} />
+                                      {guest.children}
+                                    </div>
+                                  </td>
+                                  <td>
+                                    {guest.arrived ? (
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <span className={`${styles.badge} ${styles.success}`}>
+                                          <CheckCircle style={{ width: '12px', height: '12px' }} />
+                                          Arrivé {guest.arrivalTime && formatTime(guest.arrivalTime)}
+                                        </span>
+                                        <button
+                                          className={`${styles.iconButton} ${styles.danger}`}
+                                          onClick={() => handleCancelArrival(guest.id)}
+                                          title="Annuler l'arrivée"
+                                        >
+                                          <X style={{ width: '14px', height: '14px' }} />
+                                        </button>
+                                      </div>
+                                    ) : (
+                                      <span className={`${styles.badge} ${styles.warning}`}>
+                                        En attente
+                                      </span>
+                                    )}
+                                  </td>
+                                  <td>
+                                    <div className={styles.actions} style={{ justifyContent: 'center' }}>
+                                      <button
+                                        className={styles.iconButton}
+                                        onClick={() => handleEdit(guest)}
+                                        title="Modifier"
+                                      >
+                                        <Edit style={{ width: '16px', height: '16px' }} />
+                                      </button>
+                                      <button
+                                        className={`${styles.iconButton} ${styles.danger}`}
+                                        onClick={() => handleDelete(guest.id)}
+                                        title="Supprimer"
+                                      >
+                                        <Trash2 style={{ width: '16px', height: '16px' }} />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
             ) : (
               <div className={styles.emptyState}>
                 <p>Aucun invité trouvé</p>
