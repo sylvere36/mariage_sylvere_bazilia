@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { getGuests, getTables } from '@/lib/db';
-import { Users, Table as TableIcon, CheckCircle, FileText, ArrowLeft } from 'lucide-react';
+import { Users, Table as TableIcon, CheckCircle, FileText, ArrowLeft, LayoutGrid } from 'lucide-react';
 import styles from './admin.module.css';
 
 export default async function AdminPage() {
@@ -93,7 +93,15 @@ export default async function AdminPage() {
         </div>
 
         {/* Actions */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+          <Link href="/admin/overview" style={{ textDecoration: 'none' }}>
+            <div className={styles.card} style={{ cursor: 'pointer', transition: 'transform 0.2s', height: '100%' }}>
+              <LayoutGrid style={{ width: '48px', height: '48px', color: '#d97706', marginBottom: '1rem' }} />
+              <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '0.5rem', color: '#111827' }}>Vue d'ensemble</h2>
+              <p style={{ color: '#6b7280' }}>Voir tous les invités par table</p>
+            </div>
+          </Link>
+
           <Link href="/admin/tables" style={{ textDecoration: 'none' }}>
             <div className={styles.card} style={{ cursor: 'pointer', transition: 'transform 0.2s', height: '100%' }}>
               <TableIcon style={{ width: '48px', height: '48px', color: '#d97706', marginBottom: '1rem' }} />
