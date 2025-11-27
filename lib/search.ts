@@ -22,9 +22,12 @@ export function searchGuests(guests: Guest[], query: string): Guest[] {
     keys: [
       { name: 'name', weight: 2 },
     ],
-    threshold: 0.4, // Plus tolérant pour les fautes de frappe
+    threshold: 0.5, // Encore plus tolérant
     ignoreLocation: true, // Chercher dans toute la chaîne
+    distance: 100, // Augmenter la distance de recherche
+    minMatchCharLength: 2, // Minimum 2 caractères pour matcher
     includeScore: true,
+    useExtendedSearch: false,
     getFn: (obj, path) => {
       const value = obj[path[0] as keyof Guest];
       return typeof value === 'string' ? normalizeString(value) : '';
@@ -38,9 +41,23 @@ export function searchGuests(guests: Guest[], query: string): Guest[] {
 export function findExactGuest(guests: Guest[], query: string): Guest | null {
   const normalizedQuery = normalizeString(query);
   
-  return guests.find(guest => {
+  // D'abord chercher une correspondance exacte complète
+  const exactMatch = guests.find(guest => {
     const name = normalizeString(guest.name);
+    return name === normalizedQuery;
+  });
+  
+  if (exactMatch) return exactMatch;
+  
+  // Ensuite chercher si la requête est contenue dans le nom (minimum 4 caractères)
+  if (normalizedQuery.length >= 4) {
+    const partialMatch = guests.find(guest => {
+      const name = normalizeString(guest.name);
+      return name.includes(normalizedQuery);
+    });
     
-    return name === normalizedQuery || name.includes(normalizedQuery);
-  }) || null;
+    if (partialMatch) return partialMatch;
+  }
+  
+  return null;
 }
