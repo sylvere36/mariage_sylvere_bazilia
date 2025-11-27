@@ -33,6 +33,8 @@ export default function OverviewClientPage({ initialTables, initialGuests }: Ove
   const totalPlaces = guests.reduce((sum, g) => sum + g.places, 0);
   const totalChildren = guests.reduce((sum, g) => sum + g.children, 0);
   const totalCapacity = tables.reduce((sum, t) => sum + t.capacity, 0);
+  const arrivedPlaces = guests.filter(g => g.arrived).reduce((sum, g) => sum + g.places, 0);
+  const remainingPlaces = totalPlaces - arrivedPlaces;
 
   return (
     <main className={styles.container}>
@@ -81,9 +83,9 @@ export default function OverviewClientPage({ initialTables, initialGuests }: Ove
           <div className={styles.card}>
             <div style={{ textAlign: 'center' }}>
               <div style={{ fontSize: '2rem', fontWeight: '700', color: '#dc2626' }}>
-                {totalCapacity - totalPlaces}
+                {remainingPlaces}
               </div>
-              <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>Places restantes</div>
+              <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>Places non arrivées</div>
             </div>
           </div>
         </div>
