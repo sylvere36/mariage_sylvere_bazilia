@@ -15,6 +15,7 @@ export default function TablesClientPage({ initialTables }: TablesClientPageProp
   const [tables, setTables] = useState<Table[]>(initialTables);
   const [isEditing, setIsEditing] = useState(false);
   const [editingTable, setEditingTable] = useState<Table | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     number: 0,
@@ -25,6 +26,9 @@ export default function TablesClientPage({ initialTables }: TablesClientPageProp
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     try {
       if (editingTable) {
         await updateTable(editingTable.id, formData);
@@ -37,6 +41,7 @@ export default function TablesClientPage({ initialTables }: TablesClientPageProp
       }
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Erreur');
+      setIsSubmitting(false);
     }
   };
 
@@ -149,8 +154,8 @@ export default function TablesClientPage({ initialTables }: TablesClientPageProp
                 </div>
 
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <button type="submit" className={styles.button} style={{ flex: 1 }}>
-                    {isEditing ? 'Mettre à jour' : 'Créer'}
+                  <button type="submit" className={styles.button} style={{ flex: 1 }} disabled={isSubmitting}>
+                    {isSubmitting ? 'En cours...' : (isEditing ? 'Mettre à jour' : 'Créer')}
                   </button>
                   {isEditing && (
                     <button type="button" className={`${styles.button} ${styles.buttonSecondary}`} onClick={resetForm}>

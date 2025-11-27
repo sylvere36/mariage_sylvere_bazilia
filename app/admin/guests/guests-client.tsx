@@ -20,6 +20,7 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
   const [editingGuest, setEditingGuest] = useState<Guest | null>(null);
   const [filter, setFilter] = useState<'all' | 'arrived' | 'not-arrived'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     places: 1,
@@ -30,6 +31,9 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     try {
       if (editingGuest) {
         await updateGuest(editingGuest.id, formData);
@@ -44,6 +48,7 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
       window.location.reload();
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Erreur');
+      setIsSubmitting(false);
     }
   };
 
@@ -222,11 +227,11 @@ export default function GuestsClientPage({ initialGuests, initialTables }: Guest
               </div>
 
               <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <button type="submit" className={styles.button} style={{ flex: 1 }}>
-                  {isEditing ? 'Mettre à jour' : 'Créer'}
+                <button type="submit" className={styles.button} style={{ flex: 1 }} disabled={isSubmitting}>
+                  {isSubmitting ? 'En cours...' : (isEditing ? 'Mettre à jour' : 'Créer')}
                 </button>
                 {isEditing && (
-                  <button type="button" className={`${styles.button} ${styles.buttonSecondary}`} onClick={resetForm}>
+                  <button type="button" className={`${styles.button} ${styles.buttonSecondary}`} onClick={resetForm} disabled={isSubmitting}>
                     Annuler
                   </button>
                 )}
